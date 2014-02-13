@@ -1,13 +1,16 @@
 
 class Book
-  attr_reader :author, :title
-  attr_accessor :id, :status, :borrower
+  attr_reader :author, :title, :year_published, :edition
+  attr_accessor :id, :status, :borrower, :reviews
 
-  def initialize(title, author)
+  def initialize(title, author, year_published = nil, edition = nil)
     @title = title
     @author = author
     @id = nil
     @status = "available"
+    @year_published ||= year_published
+    @edition ||= edition
+    @reviews = []
   end
 
   def check_out(borrower)
@@ -16,11 +19,11 @@ class Book
        @status = "checked_out"
        @borrower = borrower
        @borrower.num_checked_out += 1
-       did_it_work = true
+       true
       else
         @status = "checked_out"
         puts "this book is already checked out"
-        did_it_work = false
+        false
     end
   end
 
@@ -37,6 +40,14 @@ class Book
       did_it_work = false
     end
   end
+
+  def review(borrower, rating, text = nil)
+    @borrower = borrower
+    @rating = rating
+    @text ||= text
+    @reviews << {:borrower => @borrower.name, :title => @title, :rating => @rating, :text => @text}
+  end
+
 end
 
 class Borrower
@@ -78,7 +89,7 @@ class Library
   def check_out_book(book_id, borrower)
     # use book_id to find the book_title
     # detect returns first object, not the array (as select does)
-    if borrower.num_checked_out < 2 
+    if borrower.num_checked_out < 2
       checked_out_book = @books.detect { |x| x.id == book_id  }
       if checked_out_book.status == "available"
         checked_out_book.check_out(borrower)

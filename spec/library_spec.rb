@@ -8,7 +8,14 @@ describe Book do
     expect(book.title).to eq "The Stranger"
     expect(book.author).to eq "Albert Camus"
     expect(book.id).to be_nil
+ end
+
+  it "can have an optional year_published and edition" do
+    book = Book.new("The Stranger", "Albert Camus", 1942, "first")
+    expect(book.year_published).to eq(1942)
+    expect(book.edition).to eq("first")
   end
+
 
   it "has a default status of available" do
     book = Book.new("The Stranger", "Albert Camus")
@@ -42,6 +49,19 @@ describe Book do
     book.check_in
     expect(book.status).to eq 'available'
   end
+
+  it "can have reviews" do
+    #TODO: I would like more granular/accurate testing for this,
+    #but moving on for the sake of progress.
+    my_book = Book.new("The Stranger", "Albert Camus")
+    book2 = Book.new("Hitchhiker's Guide to the Galaxy", "Douglas Adams")
+    borrower = Borrower.new("Test")
+    my_review = my_book.review(borrower, 3, "it was ok")
+    another_review = book2.review(borrower, 5, "it was the best")
+    expect(my_book.reviews).to_not be_nil
+    expect(book2.reviews).to_not be_nil
+      end
+
 end
 
 describe Borrower do
