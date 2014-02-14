@@ -2,65 +2,65 @@ require "./library.rb"
 require 'pry-debugger'
 
 describe Book do
-  it "has a title and author, and nil id" do
-    book = Book.new("The Stranger", "Albert Camus")
 
-    expect(book.title).to eq "The Stranger"
-    expect(book.author).to eq "Albert Camus"
-    expect(book.id).to be_nil
+  before do
+    @book = Book.new("The Stranger", "Albert Camus")
+    @borrower = Borrower.new("Zalary")
+  end
+
+  it "has a title and author, and nil id" do
+    expect(@book.title).to eq "The Stranger"
+    expect(@book.author).to eq "Albert Camus"
+    expect(@book.id).to be_nil
  end
 
   it "can have an optional year_published and edition" do
-    book = Book.new("The Stranger", "Albert Camus", 1942, "first")
-    expect(book.year_published).to eq(1942)
-    expect(book.edition).to eq("first")
+    book_ye = Book.new("The Stranger", "Albert Camus", 1942, "first")
+    expect(book_ye.year_published).to eq(1942)
+    expect(book_ye.edition).to eq("first")
   end
 
 
   it "has a default status of available" do
-    book = Book.new("The Stranger", "Albert Camus")
-    expect(book.status).to eq 'available'
+    expect(@book.status).to eq 'available'
   end
 
   it "can be checked out" do
-    book = Book.new("The Stranger", "Albert Camus")
-    borrower = Borrower.new("Test")
-    did_it_work = book.check_out(borrower)
+    did_it_work = @book.check_out(@borrower)
     expect(did_it_work).to be_true
-    expect(book.status).to eq 'checked_out'
+    expect(@book.status).to eq 'checked_out'
   end
 
   it "can't be checked out twice in a row" do
-    book = Book.new("The Stranger", "Albert Camus")
-    borrower = Borrower.new("Test")
-    did_it_work = book.check_out(borrower)
+    did_it_work = @book.check_out(@borrower)
     expect(did_it_work).to eq(true)
 
-    did_it_work_again = book.check_out(borrower)
+    did_it_work_again = @book.check_out(@borrower)
     expect(did_it_work_again).to eq(false)
 
-    expect(book.status).to eq 'checked_out'
+    expect(@book.status).to eq 'checked_out'
   end
 
   it "can be checked in" do
-    book = Book.new("The Stranger", "Albert Camus")
-    borrower = Borrower.new("Test")
-    book.check_out(borrower)
-    book.check_in
-    expect(book.status).to eq 'available'
+    @book.check_out(@borrower)
+    @book.check_in
+    expect(@book.status).to eq 'available'
   end
 
   it "can have reviews" do
-    #TODO: I would like more granular/accurate testing for this,
-    #but moving on for the sake of progress.
-    my_book = Book.new("The Stranger", "Albert Camus")
     book2 = Book.new("Hitchhiker's Guide to the Galaxy", "Douglas Adams")
-    borrower = Borrower.new("Test")
-    my_review = my_book.review(borrower, 3, "it was ok")
-    another_review = book2.review(borrower, 5, "it was the best")
-    expect(my_book.reviews).to_not be_nil
+    my_review = @book.review(@borrower, 3, "it was ok")
+    another_review = book2.review(@borrower, 5, "it was the best")
+    #TODO: I would like more granular/accurate testing for this, but moving on for the sake of progress.
+    expect(@book.reviews).to_not be_nil
     expect(book2.reviews).to_not be_nil
-      end
+  end
+
+  it 'is overdue after 7 days' do
+
+  end
+
+
 
 end
 
